@@ -1,10 +1,14 @@
 import React from 'react'
 import FrameList from '../frame-list'
-import {withFrameStoreService} from '../hoc'
-const HomePage = ({frameStoreService}) => {
-    const items = frameStoreService.getFrames()
+import ShoppingCartTable from '../shopping-cart-table'
+
+const HomePage = () => {
     return (
-        <FrameList frames ={items}/>
+        <div>
+            <FrameList />
+            <ShoppingCartTable/>
+        </div>
+        
     )
 }
-export default withFrameStoreService()(HomePage)
+export default HomePage
