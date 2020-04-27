@@ -4,10 +4,11 @@ const initialState = {
     error: null
 }
 
+
 const reducer = (state = initialState, action) => {
 
     switch(action.type) {
-        case 'HEIGHT_CHANGED':
+        case 'HEIGHT_UPDATE':
             const framehId = action.payload
             const height = action.height
             const itemhIndex = state.frames.findIndex(({id}) => id === framehId)
@@ -26,7 +27,7 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 frames: newFramesh
             }
-        case 'WIDTH_CHANGED':
+        case 'WIDTH_UPDATE':
             const frameId = action.payload
             const width = action.width
             const itemIndex = state.frames.findIndex(({id}) => id === frameId)
@@ -45,19 +46,19 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 frames: newFrames
             }
-        case 'FRAMES_REQUESTED':
+        case 'FETCH_FRAMES_REQUEST':
             return {
                 frames: [],
                 loading: true,
                 error: null
             }
-        case 'FRAMES_LOADED':
+        case 'FETCH_FRAMES_SUCCESS':
             return {
                 frames: action.payload,
                 loading: false,
                 error: null
             };
-        case 'FRAMES_ERROR': 
+        case 'FETCH_FRAMES_FAILURE': 
             return {
                 frames: [],
                 loading: false,

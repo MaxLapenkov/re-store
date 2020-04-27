@@ -3,8 +3,6 @@ import './frame-list-item.css'
 
 const FrameListItem = ({frame, widthChanged, heightChanged}) => {
     const {name, color, image, price, width, height} = frame
-    // const [width, setWidth] = useState(20);
-    // const [height, setHeight] = useState(20);
 
     const cost = Math.round(width*height/100*price);
     
