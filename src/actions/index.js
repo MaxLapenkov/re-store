@@ -24,9 +24,16 @@ const heightChanged = (id, height) => {
         height: height
     }
 }
+const framesError = (error) => {
+    return{
+        type: 'FRAMES_ERROR',
+        payload: error
+    }
+}
 export {
     framesLoaded,
     framesRequested,
+    framesError,
     widthChanged,
     heightChanged
 }

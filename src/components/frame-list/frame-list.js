@@ -1,29 +1,34 @@
 import React, {Component} from 'react'
 import FrameListItem from '../frame-list-item/'
+import ErrorIndicator from '../error-indicator/'
 import {connect} from 'react-redux'
 import './frame-list.css'
 import {withFrameStoreService} from '../hoc'
-import {framesLoaded, framesRequested, widthChanged, heightChanged} from '../../actions'
+import {framesLoaded, framesRequested, framesError, widthChanged, heightChanged} from '../../actions'
 import {compose} from '../../utils'
 import Spinner from '../spinner'
 class FrameList extends Component {
 
     
     componentDidMount() {
-        const {frameStoreService, framesLoaded, framesRequested} = this.props;
+        const {frameStoreService, framesLoaded, framesRequested, framesError} = this.props;
         framesRequested();
         frameStoreService.getFrames()
-            .then((data) => framesLoaded(data))           
+            .then((data) => framesLoaded(data))
+            .catch((err) => framesError(err))           
     }
 
  
     render() {
-        const {frames, loading, widthChanged, heightChanged} = this.props;
+        const {frames, loading, error, widthChanged, heightChanged} = this.props;
         
         if(loading) {
             return(
                 <Spinner/>
             )
+        }
+        if (error) {
+            return <ErrorIndicator/>
         }
         return (
             <ul className="frame-list">
@@ -41,12 +46,13 @@ class FrameList extends Component {
         )
     }
 }
-const mapStateToProps = ( {frames, loading}) => {
-    return{frames, loading}
+const mapStateToProps = ( {frames, loading, error}) => {
+    return{frames, loading, error}
 }
 const mapDispatchToProps = {
     framesLoaded,
-    framesRequested, 
+    framesRequested,
+    framesError, 
     widthChanged,
     heightChanged
 }

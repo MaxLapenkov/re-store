@@ -1,6 +1,7 @@
 const initialState = {
     frames: [],
-    loading: true
+    loading: true,
+    error: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -47,13 +48,21 @@ const reducer = (state = initialState, action) => {
         case 'FRAMES_REQUESTED':
             return {
                 frames: [],
-                loading: true
+                loading: true,
+                error: null
             }
         case 'FRAMES_LOADED':
             return {
                 frames: action.payload,
-                loading: false
+                loading: false,
+                error: null
             };
+        case 'FRAMES_ERROR': 
+            return {
+                frames: [],
+                loading: false,
+                error: action.payload
+            }
         default:
             return state;
     }

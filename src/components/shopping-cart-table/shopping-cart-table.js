@@ -10,6 +10,8 @@ const ShoppingCartTable = () => {
                     <tr>
                     <th>#</th>
                     <th>Предмет</th>
+                    <th>Ширина</th>
+                    <th>Высота</th>
                     <th>Количество</th>
                     <th>Цена</th>
                     <th>Действие</th>
@@ -19,6 +21,8 @@ const ShoppingCartTable = () => {
                     <tr>
                     <td>1</td>
                     <td>Белоснежка Flora</td>
+                    <td>20</td>
+                    <td>20</td>
                     <td>1</td>
                     <td>200</td>
                     <td>
