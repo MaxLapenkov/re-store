@@ -18,7 +18,7 @@ const App = ({orderTotal, cartItemsTotal}) =>{
             </main>
         )  
 }
-const mapStateToProps = ( {orderTotal, cartItemsTotal}) => {
+const mapStateToProps = ( {shoppingCart: {orderTotal, cartItemsTotal}}) => {
     return{orderTotal, cartItemsTotal}
 }
 export default connect(mapStateToProps)(App)

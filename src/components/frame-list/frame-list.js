@@ -52,7 +52,7 @@ class FrameListContainer extends Component {
 }
 
 
-const mapStateToProps = ( {frames, loading, error}) => {
+const mapStateToProps = ( {frameList: {frames, loading, error}}) => {
     return{frames, loading, error}
 }
 const mapDispatchToProps = (dispatch, ownProps) => {

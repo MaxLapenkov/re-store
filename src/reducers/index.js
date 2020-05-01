@@ -1,10 +1,14 @@
 const initialState = {
-    frames: [],
-    loading: true,
-    error: null,
-    cartItems: [],
-    orderTotal: 0,
-    cartItemsTotal: 0
+    frameList: {
+        frames: [],
+        loading: true,
+        error: null,
+    },
+    shoppingCart: {
+        cartItems: [],
+        orderTotal: 0,
+        cartItemsTotal: 0
+    }
 }
 const updateCartItems = (cartItems, item, idx) => {
     if(item.count === 0) {
@@ -56,44 +60,82 @@ const updateCartItem = (frame, cartItem, quantity) => {
     }
 }
 const updateOrder = (state, frameId, quantity) => {
-    const {frames, cartItems} = state
+    const {frameList: {frames},shoppingCart: {cartItems}} = state
     const frame = frames.find((frame) => frame.id === frameId)
     const cartItemIndex = cartItems.findIndex(({id}) => id === frameId)
     const cartItem = cartItems[cartItemIndex]
     
     const newItem = updateCartItem(frame, cartItem, quantity)
-    const newCartItems = updateCartItems(state.cartItems, newItem, cartItemIndex)
+    const newCartItems = updateCartItems(cartItems, newItem, cartItemIndex)
     const orderTotal = Object.values(newCartItems).reduce((t, {total}) => t + total, 0)
     const cartItemsTotal = Object.values(newCartItems).reduce((t, {count}) => t + count, 0)
         return {
-        ...state,
         orderTotal: orderTotal,
         cartItems: newCartItems,
         cartItemsTotal: cartItemsTotal
         }
 }
 
-const reducer = (state = initialState, action) => {
+const updateFrameList = (state, action) => {
+    switch(action.type) {
+        case 'FETCH_FRAMES_REQUEST':
+            return {
+                frames: [],
+                loading: true,
+                error: null
+            }
+        case 'FETCH_FRAMES_SUCCESS':
+            return {
+                frames: action.payload,
+                loading: false,
+                error: null
+            };
+        case 'FETCH_FRAMES_FAILURE': 
+            return {
+                frames: [],
+                loading: false,
+                error: action.payload
+            }
+        default:
+            return state;
+    }
+}
+const updateShoppingCart = (state, action) => {
+    const {shoppingCart: {cartItems}} = state
+    switch(action.type) {
+        case 'FRAME_ADDED_TO_CART':
+            return updateOrder(state, action.payload, 1)
+           
+        case 'FRAME_DELETED_FROM_CART':
+            return updateOrder(state, action.payload, -1)
+        case 'ALL_FRAMES_DELETED_FROM_CART':
+            const itemToDelete = cartItems.find(({id}) => id === action.payload)
+            return updateOrder(state, action.payload, -itemToDelete.count)
+        default:
+            return state;
+     }
+}
+const updateWidthAndHeight = (state, action) => {
+    const {frameList: {frames}} = state
     const frameId = action.payload
-    const itemIndex = state.frames.findIndex(({id}) => id === frameId)
-    const item = state.frames[itemIndex];
+    const itemIndex = frames.findIndex(({id}) => id === frameId)
+    const item = frames[itemIndex];
     const height = action.height
     const width = action.width
     switch(action.type) {
         case 'HEIGHT_UPDATE':
-            let newItemHeight = {
+                let newItemHeight = {
                 ...item,
                 height: height,
                 id: item.id+1000
             }
             let newFramesHeight = [
-                ...state.frames.slice(0, itemIndex),
+                ...frames.slice(0, itemIndex),
                 newItemHeight,
-                ...state.frames.slice(itemIndex + 1)
+                ...frames.slice(itemIndex + 1)
             ]
             
             return {
-                ...state,
                 frames: newFramesHeight
             }
         case 'WIDTH_UPDATE':
@@ -103,47 +145,42 @@ const reducer = (state = initialState, action) => {
                 id: item.id+1000
             }
             let newFramesWidth = [
-                ...state.frames.slice(0, itemIndex),
+                ...frames.slice(0, itemIndex),
                 newItemWidth,
-                ...state.frames.slice(itemIndex + 1)
+                ...frames.slice(itemIndex + 1)
             ]
             
             return {
-                ...state,
                 frames: newFramesWidth
             }
+            default:
+            return state;
+    }
+}
+
+const reducer = (state = initialState, action) => {
+    switch(action.type) {
         case 'FETCH_FRAMES_REQUEST':
-            return {
-                ...state,
-                frames: [],
-                loading: true,
-                error: null
-            }
         case 'FETCH_FRAMES_SUCCESS':
+        case 'FETCH_FRAMES_FAILURE':
             return {
                 ...state,
-                frames: action.payload,
-                loading: false,
-                error: null
-            };
-        case 'FETCH_FRAMES_FAILURE': 
+                frameList: updateFrameList(state, action)
+            }
+        case 'FRAME_ADDED_TO_CART':
+        case 'FRAME_DELETED_FROM_CART':
+        case 'ALL_FRAMES_DELETED_FROM_CART':
             return {
                 ...state,
-                frames: [],
-                loading: false,
-                error: action.payload
+                shoppingCart: updateShoppingCart(state, action)
+            }
+        case 'HEIGHT_UPDATE':
+        case 'WIDTH_UPDATE':
+            return {
+                ...state,
+                frameList: updateWidthAndHeight(state, action)
             }
 
-        case 'FRAME_ADDED_TO_CART':
-            return updateOrder(state, action.payload, 1)
-           
-        case 'FRAME_DELETED_FROM_CART':
-            return updateOrder(state, action.payload, -1)
-        case 'ALL_FRAMES_DELETED_FROM_CART':
-            const itemToDelete = state.cartItems.find(({id}) => id === action.payload)
-            return updateOrder(state, action.payload, -itemToDelete.count)
-            
-            
         default:
             return state;
     }
