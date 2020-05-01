@@ -61,10 +61,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     
     return{
         fetchFrames: () => {
-            dispatch(framesRequested());
+            framesRequested();
             frameStoreService.getFrames()
-            .then((data) => dispatch(framesLoaded(data)))
-            .catch((err) => dispatch(framesError(err)))  
+            .then((data) => framesLoaded(data))
+            .catch((err) => framesError(err)) 
         },
         widthChanged,
         heightChanged,
