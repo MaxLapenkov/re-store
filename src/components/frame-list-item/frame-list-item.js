@@ -1,7 +1,7 @@
 import React from 'react'
 import './frame-list-item.css'
 
-const FrameListItem = ({frame, widthChanged, heightChanged}) => {
+const FrameListItem = ({frame, widthChanged, heightChanged, onAddedToCart}) => {
     const {name, color, image, price, width, height} = frame
 
     const cost = Math.round(width*height/100*price);
@@ -31,7 +31,9 @@ const FrameListItem = ({frame, widthChanged, heightChanged}) => {
                 <span>Цена: {cost}</span>
                 
 
-                <button className="btn btn-info add-to-cart">Добавить в корзину</button>
+                <button 
+                className="btn btn-info add-to-cart"
+                onClick = {onAddedToCart}>Добавить в корзину</button>
             </div>
             
         </div>

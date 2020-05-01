@@ -30,6 +30,24 @@ const framesError = (error) => {
         payload: error
     }
 }
+const frameAddedToCart = (frameId) => {
+    return {
+        type: 'FRAME_ADDED_TO_CART',
+        payload: frameId
+    }
+}
+const frameDeletedfromCart = (frameId) => {
+    return {
+        type: 'FRAME_DELETED_FROM_CART',
+        payload: frameId
+    }
+}
+const allFramesDeletedfromCart = (frameId) => {
+    return {
+        type: 'ALL_FRAMES_DELETED_FROM_CART',
+        payload: frameId
+    }
+}
 
 export {
     framesLoaded,
@@ -37,4 +55,7 @@ export {
     framesError,
     widthChanged,
     heightChanged,
+    frameAddedToCart,
+    frameDeletedfromCart,
+    allFramesDeletedfromCart
 }

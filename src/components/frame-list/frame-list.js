@@ -8,7 +8,25 @@ import * as actions from '../../actions'
 import {compose} from '../../utils'
 import Spinner from '../spinner'
 import { bindActionCreators } from 'redux'
-class FrameList extends Component {
+
+const FrameList = ({frames, widthChanged, heightChanged, onAddedToCart}) => {
+    return (
+        <ul className="frame-list">
+                {
+                    frames.map((frame) => {
+                        return (
+                            <li key={frame.id}><FrameListItem 
+                            frame={frame} 
+                            widthChanged={(e) => widthChanged(frame.id, Number(e.target.value))}
+                            heightChanged={(e) => heightChanged(frame.id, Number(e.target.value))}
+                            onAddedToCart={() => onAddedToCart(frame.id)}/></li>
+                        )
+                    })
+                }
+            </ul>
+    )
+}
+class FrameListContainer extends Component {
 
     
     componentDidMount() {
@@ -17,7 +35,7 @@ class FrameList extends Component {
 
  
     render() {
-        const {frames, loading, error, widthChanged, heightChanged} = this.props;
+        const {frames, loading, error, widthChanged, heightChanged, onAddedToCart} = this.props;
         
         if(loading) {
             return(
@@ -28,27 +46,18 @@ class FrameList extends Component {
             return <ErrorIndicator/>
         }
         return (
-            <ul className="frame-list">
-                {
-                    frames.map((frame) => {
-                        return (
-                            <li key={frame.id}><FrameListItem 
-                            frame={frame} 
-                            widthChanged={(e) => widthChanged(frame.id, Number(e.target.value))}
-                            heightChanged={(e) => heightChanged(frame.id, Number(e.target.value))}/></li>
-                        )
-                    })
-                }
-            </ul>
+           <FrameList frames={frames} widthChanged={widthChanged} heightChanged={heightChanged} onAddedToCart={onAddedToCart}/>
         )
     }
 }
+
+
 const mapStateToProps = ( {frames, loading, error}) => {
     return{frames, loading, error}
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
     const {frameStoreService} = ownProps;
-    const {framesRequested, framesLoaded, framesError, widthChanged, heightChanged} = bindActionCreators(actions, dispatch)
+    const {framesRequested, framesLoaded, framesError, widthChanged, heightChanged, frameAddedToCart} = bindActionCreators(actions, dispatch)
     
     return{
         fetchFrames: () => {
@@ -58,7 +67,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             .catch((err) => dispatch(framesError(err)))  
         },
         widthChanged,
-        heightChanged
+        heightChanged,
+        onAddedToCart: frameAddedToCart
     }
     
 }
@@ -66,6 +76,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 export default compose(
     withFrameStoreService(),
     connect(mapStateToProps, mapDispatchToProps)
-)(FrameList)
+)(FrameListContainer)
 
 
