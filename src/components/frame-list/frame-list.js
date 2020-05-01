@@ -15,7 +15,7 @@ const FrameList = ({frames, widthChanged, heightChanged, onAddedToCart}) => {
                 {
                     frames.map((frame) => {
                         return (
-                            <li key={frame.id}><FrameListItem 
+                            <li key={frame.key}><FrameListItem 
                             frame={frame} 
                             widthChanged={(e) => widthChanged(frame.id, Number(e.target.value))}
                             heightChanged={(e) => heightChanged(frame.id, Number(e.target.value))}

@@ -20,12 +20,12 @@ const FrameListItem = ({frame, widthChanged, heightChanged, onAddedToCart}) => {
                 
                     <label>
                         <p>Ширина(cм):</p>
-                        <input type="number"  defaultValue={width} onChange={widthChanged}/>
+                        <input type="number" min="10" minLength="2" defaultValue={width} onChange={widthChanged}/>
                     </label>
 
                     <label >
                         <p>Высота(cм):</p>
-                        <input type="number"  defaultValue={height} onChange={heightChanged}/>
+                        <input type="number" min="10" minLength="2" defaultValue={height} onChange={heightChanged}/>
                     </label>
                 
                 <span>Цена: {cost}</span>

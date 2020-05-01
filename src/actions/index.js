@@ -11,17 +11,20 @@ const framesRequested = () => {
     }
 }
 const widthChanged = (id, width) => {
+    
     return {
         type: 'WIDTH_UPDATE',
         payload: id,
-        width: width
+        width: width,
     }
 }
 const heightChanged = (id, height) => {
+
+
     return {
         type: 'HEIGHT_UPDATE',
         payload: id,
-        height: height
+        height: height,
     }
 }
 const framesError = (error) => {

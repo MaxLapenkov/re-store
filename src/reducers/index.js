@@ -3,7 +3,8 @@ const initialState = {
     loading: true,
     error: null,
     cartItems: [],
-    orderTotal: 220
+    orderTotal: 0,
+    cartItemsTotal: 0
 }
 const updateCartItems = (cartItems, item, idx) => {
     if(item.count === 0) {
@@ -34,15 +35,24 @@ const updateCartItem = (frame, cartItem, quantity) => {
         };
 
     } else {
-        return {
-            id: frame.id,
-            name: frame.name,
-            count: 1,
-            width: frame.width,
-            height: frame.height,
-            total: Math.round(frame.width*frame.height*frame.price/100),
-            price: frame.price
-        };
+        if(frame.width >= 10 && frame.height >= 10) {
+            return {
+                id: frame.id,
+                name: frame.name,
+                count: 1,
+                width: frame.width,
+                height: frame.height,
+                total: Math.round(frame.width*frame.height*frame.price/100),
+                price: frame.price
+            };
+        } else{
+            return {
+                id: frame.id,
+                name: 'Введите ширину и высоту больше 10',
+                count: 1
+            }
+        }
+        
     }
 }
 const updateOrder = (state, frameId, quantity) => {
@@ -50,11 +60,16 @@ const updateOrder = (state, frameId, quantity) => {
     const frame = frames.find((frame) => frame.id === frameId)
     const cartItemIndex = cartItems.findIndex(({id}) => id === frameId)
     const cartItem = cartItems[cartItemIndex]
-          
+    
     const newItem = updateCartItem(frame, cartItem, quantity)
+    const newCartItems = updateCartItems(state.cartItems, newItem, cartItemIndex)
+    const orderTotal = Object.values(newCartItems).reduce((t, {total}) => t + total, 0)
+    const cartItemsTotal = Object.values(newCartItems).reduce((t, {count}) => t + count, 0)
         return {
         ...state,
-        cartItems: updateCartItems(state.cartItems, newItem, cartItemIndex)
+        orderTotal: orderTotal,
+        cartItems: newCartItems,
+        cartItemsTotal: cartItemsTotal
         }
 }
 
@@ -66,11 +81,10 @@ const reducer = (state = initialState, action) => {
     const width = action.width
     switch(action.type) {
         case 'HEIGHT_UPDATE':
-
             let newItemHeight = {
                 ...item,
                 height: height,
-                id: item.id+100
+                id: item.id+1000
             }
             let newFramesHeight = [
                 ...state.frames.slice(0, itemIndex),
@@ -83,14 +97,10 @@ const reducer = (state = initialState, action) => {
                 frames: newFramesHeight
             }
         case 'WIDTH_UPDATE':
-            
-            
-            
-            
             let newItemWidth = {
                 ...item,
                 width: width,
-                id: item.id+100
+                id: item.id+1000
             }
             let newFramesWidth = [
                 ...state.frames.slice(0, itemIndex),
@@ -123,8 +133,10 @@ const reducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             }
+
         case 'FRAME_ADDED_TO_CART':
             return updateOrder(state, action.payload, 1)
+           
         case 'FRAME_DELETED_FROM_CART':
             return updateOrder(state, action.payload, -1)
         case 'ALL_FRAMES_DELETED_FROM_CART':

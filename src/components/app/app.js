@@ -3,11 +3,12 @@ import ErrorBoundary from '../error-boundary/'
 import { Route, Switch} from 'react-router-dom'
 import {HomePage, CartPage} from '../pages/'
 import ShopHeader from '../shop-header'
-const App = () =>{
+import {connect} from 'react-redux'
+const App = ({orderTotal, cartItemsTotal}) =>{
         return (
             
             <main role="main" className="container">
-            <ShopHeader numItems={5} total={210}/>
+            <ShopHeader numItems={cartItemsTotal} total={orderTotal}/>
             <ErrorBoundary>
                 <Switch>
                     <Route path="/" component={HomePage} exact/>
@@ -17,5 +18,7 @@ const App = () =>{
             </main>
         )  
 }
-
-export default App
+const mapStateToProps = ( {orderTotal, cartItemsTotal}) => {
+    return{orderTotal, cartItemsTotal}
+}
+export default connect(mapStateToProps)(App)

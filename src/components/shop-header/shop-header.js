@@ -1,7 +1,13 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import './shop-header.css'
 const ShopHeader = ({numItems, total}) => {
+    useEffect(() => {
+        console.log('effect');
+        
+
+    }, [numItems, total]);
+    
     return(
         <header className="shop-header row">
             <Link className="logo text-dark" to="/">ReStore</Link>
